@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="UrlDao">
+
+   <insert    id="insertUrl"  parameterType="Url">
+   		MERGE INTO URL_ANALYSIS T
+   		USING (
+				SELECT   #{yyyyMmDd} AS YYYYMMDD
+						 , #{url} AS URL
+						 , #{method} AS METHOD
+				FROM	DUAL
+		)
+		ON	(
+				T.YYYYMMDD = #{yyyyMmDd}
+		 AND	T.URL = #{url}
+         AND	T.METHOD = #{method}
+      )
+      WHEN MATCHED THEN
+         UPDATE   SET
+         COUNT = COUNT + #{count}
+      WHEN NOT MATCHED THEN
+         INSERT (
+            YYYYMMDD
+            , URL
+            , METHOD
+            , COUNT
+            , URL_ID
+         )
+         VALUES   (
+            #{yyyyMmDd}
+            , #{url}
+            , #{method}
+            , #{count}
+            , NEXTVALUE('URL', URL_ID_SEQ.NEXTVAL)
+         )
+   </insert>
+
+</mapper>   

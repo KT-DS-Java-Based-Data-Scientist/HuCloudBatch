@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean 	id="visitStatisticsJob" 
+			class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		<property name="jobClass" value="kr.co.hucloud.batch.visit.VisitStatisticsJob" />
+	</bean> 
+	
+	<!-- <bean 	id="personalJob" 
+			class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		<property name="jobClass" value="kr.co.hucloud.batch.visit.PersonalJob" />
+	</bean> --> 
+	
+	<bean 	id="urlAnalysisJob" 
+			class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		<property name="jobClass" value="kr.co.hucloud.batch.visit.URLAnalysisJob" />
+	</bean>
+	
+	<bean 	id="behaviorAnalysisJob" 
+			class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		<property name="jobClass" value="kr.co.hucloud.batch.visit.BehaviorAnalysisJob" />
+	</bean> 
+	
+	<bean 	id="trafficAnalysisJob" 
+			class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		<property name="jobClass" value="kr.co.hucloud.batch.visit.TrafficAnalysisJob" />
+	</bean> 
+	
+	<bean 	id="cronTrigger1" 
+			class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="visitStatisticsJob"/>
+		<property name="cronExpression" value="0/10 * * * * ?"/>	<!-- 10 * * * * : 초 분 시 일 월 :: 매10초마다(10,20초...) -->
+	</bean>
+	
+	<!-- <bean 	id="cronTrigger2" 
+			class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="personalJob"/>
+		<property name="cronExpression" value="0/10 * * * * ?"/>	10 * * * * : 초 분 시 일 월 :: 매10초마다(10,20초...)
+	</bean> -->
+	
+	<bean 	id="cronTrigger2" 
+			class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="urlAnalysisJob"/>
+		<property name="cronExpression" value="0/10 * * * * ?"/>	<!-- 10 * * * * : 초 분 시 일 월 :: 매10초마다(10,20초...) -->
+	</bean>
+	
+	<bean 	id="cronTrigger3" 
+			class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="behaviorAnalysisJob"/>
+		<property name="cronExpression" value="0/10 * * * * ?"/>	<!-- 10 * * * * : 초 분 시 일 월 :: 매10초마다(10,20초...) -->
+	</bean>
+	
+	<bean 	id="cronTrigger4" 
+			class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="trafficAnalysisJob"/>
+		<property name="cronExpression" value="0/10 * * * * ?"/>	<!-- 10 * * * * : 초 분 시 일 월 :: 매10초마다(10,20초...) -->
+	</bean>
+	
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="cronTrigger1" />
+				<ref bean="cronTrigger2" />
+				<ref bean="cronTrigger3" />
+				<ref bean="cronTrigger4" />
+			</list>
+		</property>
+		<property name="quartzProperties">
+			<props>
+				<prop key="org.quartz.threadPool.class">org.quartz.simpl.SimpleThreadPool</prop>
+				<prop key="org.quartz.threadPool.threadCount">1</prop>
+				<prop key="org.quartz.threadPool.threadPriority">4</prop>
+				<prop key="org.quartz.jobStore.class">org.quartz.simpl.RAMJobStore</prop>
+				<prop key="org.quartz.jobStore.misfireThreshold">60000</prop>
+			</props>
+		</property>
+	</bean>
+	
+</beans>

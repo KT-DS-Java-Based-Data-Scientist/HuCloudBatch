@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean	id="visitStatisticsDao"
+			class="kr.co.hucloud.batch.visit.dao.VisitStatisticsDaoImpl">
+		<property name="sqlSessionTemplate" ref="sqlSessionTemplate" />
+	</bean>
+	
+	<bean	id="urlDao"
+			class="kr.co.hucloud.batch.visit.UrlDaoImpl">
+		<property name="sqlSessionTemplate" ref="sqlSessionTemplate" />
+	</bean>
+	
+	<bean	id="trafficDao"
+			class="kr.co.hucloud.batch.visit.TrafficDaoImpl">
+		<property name="sqlSessionTemplate" ref="sqlSessionTemplate" />
+	</bean>
+	
+	<bean	id="behaviorDao"
+			class="kr.co.hucloud.batch.visit.BehaviorDaoImpl">
+		<property name="sqlSessionTemplate" ref="sqlSessionTemplate" />
+	</bean>
+
+	<bean	id="kafkaConsumer"
+			class="kr.co.hucloud.batch.tool.Receiver">
+		<constructor-arg name="groupId" value="kafka-consumer-group-batch" />
+		<constructor-arg name="bootstrapServers" value="localhost:9092" />
+		<constructor-arg name="keyDeserializer" value="org.apache.kafka.common.serialization.StringDeserializer" />
+		<constructor-arg name="valueDeserializer" value="org.apache.kafka.common.serialization.StringDeserializer" />
+	</bean>
+</beans>

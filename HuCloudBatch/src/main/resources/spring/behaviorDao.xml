@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+   
+   <mapper namespace="BehaviorDao">
+   
+   		<insert id="insertBehavior" parameterType="Behavior">
+   			MERGE INTO BEHAVIOR_ANALYSIS T
+	   		USING (
+					SELECT   #{ip} AS IP
+							 , #{id} AS ID
+							 , #{yyyyMmDd} AS YYYYMMDD
+							 , #{url} AS URL
+							 , #{method} AS METHOD
+					FROM	DUAL
+			)
+			ON	(
+					T.IP = #{ip}
+			 AND	T.ID = #{id}
+			 AND	T.YYYYMMDD = #{yyyyMmDd}
+			 AND	T.URL = #{url}
+	         AND	T.METHOD = #{method}
+	      )
+	      WHEN MATCHED THEN
+	         UPDATE   SET
+	         COUNT = COUNT + #{count}
+	      WHEN NOT MATCHED THEN
+	         INSERT (
+	         	IP
+	         	, ID
+	            , YYYYMMDD
+	            , URL
+	            , METHOD
+	            , COUNT
+	            , BEHAVIOR_ID
+	         )
+	         VALUES   (
+	         	#{ip}
+	         	, #{id}
+	            , #{yyyyMmDd}
+	            , #{url}
+	            , #{method}
+	            , #{count}
+	            , NEXTVALUE('BH', BEHAVIOR_ID_SEQ.NEXTVAL)
+	         )
+   		</insert>
+   		
+   </mapper>   
